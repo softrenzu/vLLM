@@ -1,0 +1,9 @@
+services:
+  gateway:
+    build: .
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./config.example.yaml:/app/config.yaml:ro
+    environment:
+      ROOOMVLLM_CONFIG: /app/config.yaml
