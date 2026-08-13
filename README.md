@@ -1,23 +1,23 @@
 # RooomVLLM
 
-RooomVLLM is an experimental control plane built directly on the vLLM Python engine. It adds enterprise serving policy while leaving model execution to vLLM.
+RooomVLLM is an adaptive control plane built directly on the vLLM Python engine.
 
-Implemented today: OpenAI-style chat/completions, adaptive latency/load/cost routing, virtual model aliases, automatic fallback, circuit breaker, hedged non-streaming requests, TTL cache, per-tenant limits, health/metadata/model APIs, route explanation, Prometheus metrics, request IDs, CI, and GPU-free control-plane tests.
+Implemented: OpenAI-style chat/completions, latency/load/cost routing, model aliases, fallback, circuit breaker, hedged non-streaming requests, TTL cache, tenant limits, health/metadata APIs, route explanation, Prometheus metrics, request IDs, CI, and GPU-free control-plane tests.
 
-This is a production-oriented MVP. It does not claim higher GPU throughput than NVIDIA NIM without an identical-hardware benchmark. The current local driver supports `/v1/chat/completions` and `/v1/completions`; streaming, embeddings, Responses, and Messages are next milestones.
+This is a production-oriented MVP. It does not claim higher GPU throughput than NVIDIA NIM until both are benchmarked with the same model, GPU, precision, concurrency, and request mix.
+
+Current local inference endpoints are `/v1/chat/completions` and `/v1/completions`. Streaming, embeddings, Responses, and Messages are roadmap items.
 
 ## Run
 
-Copy `config.example.yaml` to `config.yaml`, install `pip install -e '.[engine]'`, set `ROOOMVLLM_CONFIG=config.yaml`, then run `rooomvllm`.
+Docker is the recommended path; the Dockerfile is based on the official vLLM image. For a local Python install, install a compatible vLLM 0.26 release first, then install this package with `pip install -e .`.
 
-Use `X-Rooom-Route: balanced`, `latency`, or `cost` to change routing policy.
+Copy `config.example.yaml` to `config.yaml`, set `ROOOMVLLM_CONFIG=config.yaml`, and run `rooomvllm`.
 
-## Test
-
-Install `.[dev]`, then run `python -m compileall -q rooomvllm` and `pytest -q`.
+Routing policy can be selected with `X-Rooom-Route: balanced`, `latency`, or `cost`.
 
 ## Roadmap
 
-AsyncLLM token streaming, embeddings, full Responses/Messages support, KV-cache-aware routing, token/dollar budgets, OpenTelemetry, OIDC/RBAC/mTLS, Kubernetes GPU discovery, Run:ai/OpenShift/KServe profiles, and a reproducible direct-vLLM/RooomVLLM/NIM benchmark.
+AsyncLLM streaming, embeddings, Responses/Messages, KV-cache-aware routing, budget enforcement, OpenTelemetry, OIDC/RBAC/mTLS, Kubernetes GPU discovery, Run:ai/OpenShift/KServe profiles, and a reproducible vLLM/RooomVLLM/NIM benchmark.
 
 License: Apache-2.0.
