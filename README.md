@@ -30,6 +30,8 @@ ROOOMTECH provides paid maintenance and support, implementation and integration 
 
 Contact: `tasuku.yoshioka@rooomtech.com`
 
+PolyForm Noncommercial License 1.0.0: https://polyformproject.org/licenses/noncommercial/1.0.0
+
 The upstream vLLM engine and all third-party dependencies remain governed by their own licenses.
 
 ## License
