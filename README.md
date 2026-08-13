@@ -1,39 +1,62 @@
-# RooomVLLM
+# RooomInfer — Adaptive LLM Inference Control Plane
 
-Version: `0.2.0`
+Version: `0.3.0`
 
-RooomVLLM is an adaptive control plane built directly on the vLLM Python engine.
+RooomInfer is a source-available adaptive control plane for LLM inference clusters. It uses vLLM as one supported inference engine and adds routing, resilience, cost controls, multi-tenancy, observability, and policy features around the serving layer.
 
-Implemented: OpenAI-style chat/completions, latency/load/cost routing, model aliases, fallback, circuit breaker, hedged non-streaming requests, TTL cache, tenant limits, health/metadata APIs, route explanation, Prometheus metrics, request IDs, CI, and GPU-free control-plane tests.
+> RooomInfer is not the official vLLM project. The upstream vLLM engine and its dependencies remain governed by their own licenses.
 
-This is a production-oriented MVP. It does not claim higher GPU throughput than NVIDIA NIM until both are benchmarked with the same model, GPU, precision, concurrency, and request mix.
+## Core features
 
-Current local inference endpoints are `/v1/chat/completions` and `/v1/completions`. Streaming, embeddings, Responses, and Messages are roadmap items.
+- OpenAI-style chat and completions endpoints
+- Latency, load, cost, and policy-aware routing
+- Model aliases and fallback chains
+- Circuit breaker and hedged non-streaming requests
+- TTL response cache
+- Tenant limits and request IDs
+- Route explanation and health/metadata APIs
+- Prometheus-compatible metrics
+- GPU-free control-plane tests
+
+RooomInfer does not claim higher GPU throughput than NVIDIA NIM or upstream vLLM without same-hardware, same-model benchmark results.
 
 ## Run
 
-Docker is the recommended path; the Dockerfile is based on the official vLLM image. For a local Python install, install a compatible vLLM 0.26 release first, then install this package with `pip install -e .`.
+Docker is the recommended path. The Dockerfile uses the upstream vLLM runtime image.
 
-Copy `config.example.yaml` to `config.yaml`, set `ROOOMVLLM_CONFIG=config.yaml`, and run `rooomvllm`.
+For a local Python install, install a compatible vLLM release first and then:
+
+```bash
+pip install -e .
+cp config.example.yaml config.yaml
+export ROOOMVLLM_CONFIG=config.yaml
+rooom-infer
+```
+
+`rooomvllm` is retained as a compatibility command alias in the `0.3.x` line.
 
 Routing policy can be selected with `X-Rooom-Route: balanced`, `latency`, or `cost`.
 
 ## Roadmap
 
-AsyncLLM streaming, embeddings, Responses/Messages, KV-cache-aware routing, budget enforcement, OpenTelemetry, OIDC/RBAC/mTLS, Kubernetes GPU discovery, Run:ai/OpenShift/KServe profiles, and a reproducible vLLM/RooomVLLM/NIM benchmark.
+- AsyncLLM streaming
+- Embeddings and Responses/Messages APIs
+- KV-cache-aware routing
+- Budget enforcement
+- OpenTelemetry
+- OIDC/RBAC/mTLS
+- Kubernetes GPU discovery
+- Run:ai/OpenShift/KServe deployment profiles
+- Reproducible RooomInfer/vLLM/NIM benchmarks
 
-## Commercial use and support
+## Licensing and enterprise support
 
-Starting with version `0.2.0`, ROOOMTECH-authored code in this repository is source-available under the PolyForm Noncommercial License 1.0.0 for permitted noncommercial use. Commercial, business, production, revenue-generating, resale, embedded, or customer-facing use requires a separate paid commercial license from ROOOMTECH.
+Starting with version `0.3.0`, ROOOMTECH-authored code is offered under either the PolyForm Noncommercial License 1.0.0 for uses permitted by that license, or a separate paid ROOOMTECH Commercial Software License for business/commercial-purpose uses and other uses outside the PolyForm permission.
 
-ROOOMTECH provides paid maintenance and support, implementation and integration assistance, upgrade support, security support, SLA options, private builds, and custom development. A standard commercial software license agreement is available.
+ROOOMTECH provides commercial license agreements, paid maintenance and technical support, implementation and integration assistance, upgrades, security support, SLA options, private builds, and custom development.
 
 Contact: `support@rooomtech.com`
 
 PolyForm Noncommercial License 1.0.0: https://polyformproject.org/licenses/noncommercial/1.0.0
 
-The upstream vLLM engine and all third-party dependencies remain governed by their own licenses.
-
-## License
-
-ROOOMTECH-authored code from `0.2.0`: PolyForm Noncommercial License 1.0.0 for permitted noncommercial use, or a separate paid commercial license from ROOOMTECH. Earlier releases remain governed by the terms published with those releases.
+Earlier RooomInfer/RooomVLLM releases remain governed by the license terms published with those releases. Upstream vLLM and all third-party software remain under their respective licenses. See `LICENSE`.
