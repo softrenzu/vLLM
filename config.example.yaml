@@ -2,7 +2,6 @@ version: "0.1.0"
 bind: "0.0.0.0"
 port: 8000
 health_interval_seconds: 10
-# admin_token: "change-me"
 
 routing:
   mode: balanced
@@ -19,46 +18,26 @@ cache:
   ttl_seconds: 30
   max_entries: 2048
 
-# If tenant_keys is empty, anonymous access is allowed.
-# When configured, clients use Authorization: Bearer <gateway-key>.
-tenant_keys:
-  demo-key: demo
-
+# Empty means anonymous access is allowed.
+tenant_keys: {}
 tenants:
   anonymous:
-    requests_per_minute: 120
-    max_concurrency: 8
-  demo:
-    requests_per_minute: 1200
-    max_concurrency: 64
+    requests_per_minute: 600
+    max_concurrency: 32
 
+# base_url is retained by the current config schema but the embedded LocalVLLMDriver
+# does not make outbound HTTP calls; model execution happens in this process.
 backends:
-  - name: vllm-a
-    base_url: http://vllm-a:8000
-    models: [meta-llama/Llama-3.3-70B-Instruct]
+  - name: embedded-qwen
+    base_url: local://embedded-qwen
+    models: [Qwen/Qwen3-0.6B]
+    default_model: Qwen/Qwen3-0.6B
     model_aliases:
-      fast-chat: meta-llama/Llama-3.3-70B-Instruct
-    default_model: meta-llama/Llama-3.3-70B-Instruct
+      fast-chat: Qwen/Qwen3-0.6B
     priority: 10
     weight: 1.0
-    max_concurrency: 128
-    timeout_s: 120
-    cost_input_per_million: 0.15
-    cost_output_per_million: 0.60
+    max_concurrency: 32
+    cost_input_per_million: 0.0
+    cost_output_per_million: 0.0
     tags:
-      gpu: H100
-      zone: a
-
-  - name: vllm-b
-    base_url: http://vllm-b:8000
-    models: [meta-llama/Llama-3.3-70B-Instruct]
-    default_model: meta-llama/Llama-3.3-70B-Instruct
-    priority: 10
-    weight: 1.0
-    max_concurrency: 128
-    timeout_s: 120
-    cost_input_per_million: 0.12
-    cost_output_per_million: 0.55
-    tags:
-      gpu: B200
-      zone: b
+      mode: embedded
