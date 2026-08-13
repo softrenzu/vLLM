@@ -1,50 +1,23 @@
 # RooomVLLM
 
-RooomVLLM is a production control plane and adaptive OpenAI-compatible gateway for vLLM clusters.
+RooomVLLM is an experimental control plane built directly on the vLLM Python engine. It adds enterprise serving policy while leaving model execution to vLLM.
 
-It adds adaptive latency/load/cost routing, automatic fallback, circuit breaking, hedged requests, response caching, multi-tenant limits, NIM-style health/metadata endpoints, Prometheus metrics, Docker packaging, and Helm deployment while keeping vLLM as the inference engine.
+Implemented today: OpenAI-style chat/completions, adaptive latency/load/cost routing, virtual model aliases, automatic fallback, circuit breaker, hedged non-streaming requests, TTL cache, per-tenant limits, health/metadata/model APIs, route explanation, Prometheus metrics, request IDs, CI, and GPU-free control-plane tests.
 
-Status: early production-oriented MVP. Control-plane behavior is GPU-free tested; GPU performance depends on the underlying vLLM/model/hardware deployment.
+This is a production-oriented MVP. It does not claim higher GPU throughput than NVIDIA NIM without an identical-hardware benchmark. The current local driver supports `/v1/chat/completions` and `/v1/completions`; streaming, embeddings, Responses, and Messages are next milestones.
 
-## Core features
+## Run
 
-- OpenAI-compatible proxy for chat completions, completions, embeddings, Responses API, and Anthropic-style Messages pass-through
-- Adaptive `balanced`, `latency`, and `cost` routing
-- Virtual model aliases and `model=auto`
-- Automatic fallback and circuit breaker
-- Hedged requests to reduce p95/p99 latency
-- Exact response cache with TTL
-- Per-tenant RPM and concurrency limits
-- `/v1/health/live`, `/v1/health/ready`, `/v1/version`, `/v1/metadata`, `/v1/manifest`, `/v1/license`
-- `/metrics` and `/v1/metrics` Prometheus endpoints
-- `POST /v1/route/explain` for routing inspection
-- Docker and Kubernetes/Helm deployment
-- GPU-free mock-backend tests
+Copy `config.example.yaml` to `config.yaml`, install `pip install -e '.[engine]'`, set `ROOOMVLLM_CONFIG=config.yaml`, then run `rooomvllm`.
 
-## Quick start
+Use `X-Rooom-Route: balanced`, `latency`, or `cost` to change routing policy.
 
-```bash
-cp config.example.yaml config.yaml
-pip install -e .
-ROOOMVLLM_CONFIG=config.yaml rooomvllm
-```
+## Test
 
-## Kubernetes / Helm
+Install `.[dev]`, then run `python -m compileall -q rooomvllm` and `pytest -q`.
 
-```bash
-helm upgrade --install rooomvllm deploy/helm/rooomvllm \
-  --set image.repository=YOUR_REGISTRY/rooomvllm \
-  --set image.tag=YOUR_TAG
-```
+## Roadmap
 
-## Validation
+AsyncLLM token streaming, embeddings, full Responses/Messages support, KV-cache-aware routing, token/dollar budgets, OpenTelemetry, OIDC/RBAC/mTLS, Kubernetes GPU discovery, Run:ai/OpenShift/KServe profiles, and a reproducible direct-vLLM/RooomVLLM/NIM benchmark.
 
-```bash
-pip install -e '.[dev]'
-pytest -q
-ruff check rooomvllm tests
-```
-
-## License
-
-Apache-2.0.
+License: Apache-2.0.
