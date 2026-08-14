@@ -3,9 +3,9 @@ requires = ["setuptools>=69", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "rooomvllm"
-version = "0.2.0"
-description = "Production control plane and adaptive gateway for vLLM inference clusters"
+name = "rooom-infer"
+version = "0.3.0"
+description = "Adaptive LLM inference control plane"
 readme = "README.md"
 requires-python = ">=3.11"
 dependencies = [
@@ -21,6 +21,7 @@ dependencies = [
 dev = ["pytest>=8", "pytest-asyncio>=0.23", "ruff>=0.6"]
 
 [project.scripts]
+rooom-infer = "rooomvllm.cli:main"
 rooomvllm = "rooomvllm.cli:main"
 
 [tool.pytest.ini_options]
